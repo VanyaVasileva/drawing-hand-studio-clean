@@ -5,56 +5,18 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Drawing Hand Studio</title>
 <style>
-:root{--bg:#fbfaf7;--card:#fff;--ink:#171717;--muted:#6c6c6c;--line:#e7e2db;--soft:#f4f0ea;--danger:#9b2c2c}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-.wrap{max-width:1020px;margin:0 auto;padding:26px 16px 72px}h1{font-size:clamp(32px,5.5vw,56px);line-height:1.02;letter-spacing:-.04em;margin:8px 0 10px}.lead{font-size:18px;color:var(--muted);margin:0 0 22px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;margin:14px 0;box-shadow:0 8px 28px rgba(0,0,0,.035)}
-label{display:block;font-weight:700;font-size:13px;margin-bottom:7px}input[type=file]{width:100%;padding:14px;border-radius:14px;border:1px dashed #cfc8bf;background:#fcfbf8}input[type=range]{width:100%}
-.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}@media(max-width:760px){.grid2,.grid3{grid-template-columns:1fr}}
-.seg{display:flex;gap:8px;flex-wrap:wrap}.seg button,.primary{appearance:none;border:1px solid var(--line);border-radius:12px;background:#fff;padding:10px 14px;font-weight:700;font-size:15px}.seg button.active{background:#111;color:#fff;border-color:#111}.primary{width:100%;background:#111;color:#fff;border-color:#111;padding:14px 16px;font-size:17px}.primary:disabled{opacity:.38}.value{color:var(--muted);font-variant-numeric:tabular-nums}
-.preview{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(220px,.65fr);gap:16px;align-items:start}@media(max-width:760px){.preview{grid-template-columns:1fr}}video{width:100%;background:#111;border-radius:15px;display:block}.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}.stat{background:var(--soft);border-radius:13px;padding:11px}.stat small{display:block;color:var(--muted)}.stat b{display:block;font-size:18px;margin-top:3px}.note{background:#f7f4ef;border-radius:13px;padding:11px 13px;color:#5e574f;font-size:13px;margin-top:10px}.status{min-height:23px;margin-top:10px;color:var(--muted);font-size:14px}.status.error{color:var(--danger)}.hide{display:none!important}.result a{display:inline-flex;margin-top:11px;text-decoration:none;background:#111;color:#fff;padding:10px 14px;border-radius:11px;font-weight:700}.tiny{font-size:12px;color:var(--muted);margin-top:8px}details summary{cursor:pointer;font-weight:700}
+:root{--bg:#fbfaf7;--card:#fff;--ink:#171717;--muted:#6c6c6c;--line:#e7e2db;--soft:#f4f0ea;--danger:#9b2c2c}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.wrap{max-width:1020px;margin:0 auto;padding:26px 16px 72px}h1{font-size:clamp(32px,5.5vw,56px);line-height:1.02;letter-spacing:-.04em;margin:8px 0 10px}.lead{font-size:18px;color:var(--muted);margin:0 0 22px}.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;margin:14px 0;box-shadow:0 8px 28px rgba(0,0,0,.035)}label{display:block;font-weight:700;font-size:13px;margin-bottom:7px}input[type=file]{width:100%;padding:14px;border-radius:14px;border:1px dashed #cfc8bf;background:#fcfbf8}input[type=range]{width:100%}.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}@media(max-width:760px){.grid2,.grid3{grid-template-columns:1fr}}.seg{display:flex;gap:8px;flex-wrap:wrap}.seg button,.primary{appearance:none;border:1px solid var(--line);border-radius:12px;background:#fff;padding:10px 14px;font-weight:700;font-size:15px}.seg button.active{background:#111;color:#fff;border-color:#111}.primary{width:100%;background:#111;color:#fff;border-color:#111;padding:14px 16px;font-size:17px}.primary:disabled{opacity:.38}.value{color:var(--muted);font-variant-numeric:tabular-nums}.preview{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(220px,.65fr);gap:16px;align-items:start}@media(max-width:760px){.preview{grid-template-columns:1fr}}video{width:100%;background:#111;border-radius:15px;display:block}.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}.stat{background:var(--soft);border-radius:13px;padding:11px}.stat small{display:block;color:var(--muted)}.stat b{display:block;font-size:18px;margin-top:3px}.note{background:#f7f4ef;border-radius:13px;padding:11px 13px;color:#5e574f;font-size:13px;margin-top:10px}.status{min-height:23px;margin-top:10px;color:var(--muted);font-size:14px}.status.error{color:var(--danger)}.hide{display:none!important}.result a{display:inline-flex;margin-top:11px;text-decoration:none;background:#111;color:#fff;padding:10px 14px;border-radius:11px;font-weight:700}.tiny{font-size:12px;color:var(--muted);margin-top:8px}details summary{cursor:pointer;font-weight:700}
 </style>
 </head>
 <body>
 <main class="wrap">
 <h1>Let the hand follow your drawing.</h1>
 <p class="lead">Choose a screen recording, adjust the hand, then create the finished video.</p>
-
-<section class="card">
-<label for="file">Drawing screen recording</label>
-<input id="file" type="file" accept="video/mp4,video/quicktime,video/*">
-<div id="fileStatus" class="status">Choose a video to begin.</div>
-</section>
-
-<section class="card preview">
-<div><video id="source" controls playsinline preload="metadata"></video></div>
-<div>
-<div class="stats"><div class="stat"><small>Video</small><b id="size">—</b></div><div class="stat"><small>Length</small><b id="duration">—</b></div></div>
-<div class="note">Everything runs in this browser. Your recording is not uploaded to a server.</div>
-</div>
-</section>
-
-<section class="card">
-<div class="grid2">
-<div><label>Hand</label><div id="sideSeg" class="seg"><button type="button" class="active" data-side="Right">Right hand</button><button type="button" data-side="Left">Left hand</button></div></div>
-<div><label>Presentation</label><div id="presetSeg" class="seg"><button type="button" class="active" data-preset="source">Hand only</button><button type="button" data-preset="reel">iPad Reel</button><button type="button" data-preset="youtube">YouTube landscape</button></div></div>
-</div>
-<div class="grid3" style="margin-top:18px">
-<div><label>Hand size <span id="handSizeV" class="value">70%</span></label><input id="handSize" type="range" min="25" max="90" value="70"></div>
-<div><label>Pencil tip X <span id="tipXV" class="value">14.8%</span></label><input id="tipX" type="range" min="0" max="40" step="0.1" value="14.8"></div>
-<div><label>Pencil tip Y <span id="tipYV" class="value">34.4%</span></label><input id="tipY" type="range" min="0" max="70" step="0.1" value="34.4"></div>
-</div>
-<div class="grid2" style="margin-top:14px">
-<div><label>Move hand left/right <span id="offXV" class="value">0%</span></label><input id="offX" type="range" min="-25" max="25" step="0.5" value="0"></div>
-<div><label>Move hand up/down <span id="offYV" class="value">0%</span></label><input id="offY" type="range" min="-25" max="25" step="0.5" value="0"></div>
-</div>
-<details style="margin-top:16px"><summary>Tracking adjustment</summary><div style="margin-top:12px"><label>Sensitivity <span id="sensV" class="value">18</span></label><input id="sensitivity" type="range" min="6" max="50" value="18"></div></details>
-</section>
-
+<section class="card"><label for="file">Drawing screen recording</label><input id="file" type="file" accept="video/mp4,video/quicktime,video/*"><div id="fileStatus" class="status">Choose a video to begin.</div></section>
+<section class="card preview"><div><video id="source" controls playsinline preload="metadata"></video></div><div><div class="stats"><div class="stat"><small>Video</small><b id="size">—</b></div><div class="stat"><small>Length</small><b id="duration">—</b></div></div><div class="note">Everything runs in this browser. Your recording is not uploaded to a server.</div></div></section>
+<section class="card"><div class="grid2"><div><label>Hand</label><div id="sideSeg" class="seg"><button type="button" class="active" data-side="Right">Right hand</button><button type="button" data-side="Left">Left hand</button></div></div><div><label>Presentation</label><div id="presetSeg" class="seg"><button type="button" class="active" data-preset="source">Hand only</button><button type="button" data-preset="reel">iPad Reel</button><button type="button" data-preset="youtube">YouTube landscape</button></div></div></div><div class="grid3" style="margin-top:18px"><div><label>Hand size <span id="handSizeV" class="value">70%</span></label><input id="handSize" type="range" min="25" max="90" value="70"></div><div><label>Pencil tip X <span id="tipXV" class="value">14.8%</span></label><input id="tipX" type="range" min="0" max="40" step="0.1" value="14.8"></div><div><label>Pencil tip Y <span id="tipYV" class="value">34.4%</span></label><input id="tipY" type="range" min="0" max="70" step="0.1" value="34.4"></div></div><div class="grid2" style="margin-top:14px"><div><label>Move hand left/right <span id="offXV" class="value">0%</span></label><input id="offX" type="range" min="-25" max="25" step="0.5" value="0"></div><div><label>Move hand up/down <span id="offYV" class="value">0%</span></label><input id="offY" type="range" min="-25" max="25" step="0.5" value="0"></div></div><details style="margin-top:16px"><summary>Tracking adjustment</summary><div style="margin-top:12px"><label>Sensitivity <span id="sensV" class="value">18</span></label><input id="sensitivity" type="range" min="6" max="50" value="18"></div></details></section>
 <section class="card"><button id="make" class="primary" type="button" disabled>Create hand-following video</button><div id="status" class="status">Waiting for a video.</div></section>
-
 <section id="resultCard" class="card result hide"><h2 style="margin:0 0 12px">Result</h2><video id="result" controls playsinline></video><a id="download" download>Download video</a><div class="tiny">Built-in hand lead: 0.07 seconds.</div></section>
-
 <canvas id="output" class="hide"></canvas><canvas id="track" class="hide"></canvas>
 </main>
 <script>
@@ -62,94 +24,11 @@ label{display:block;font-weight:700;font-size:13px;margin-bottom:7px}input[type=
 'use strict';
 var HAND_SRC='https://raw.githubusercontent.com/VanyaVasileva/drawing-hand-studio/main/assets/default_hand.png';
 var LEAD_SECONDS=0.07;
-var fileInput=document.getElementById('file');
-var fileStatus=document.getElementById('fileStatus');
-var source=document.getElementById('source');
-var sizeEl=document.getElementById('size');
-var durationEl=document.getElementById('duration');
-var makeBtn=document.getElementById('make');
-var statusEl=document.getElementById('status');
-var resultCard=document.getElementById('resultCard');
-var resultVideo=document.getElementById('result');
-var download=document.getElementById('download');
-var output=document.getElementById('output');
-var outCtx=output.getContext('2d',{alpha:false});
-var track=document.getElementById('track');
-var trackCtx=track.getContext('2d',{willReadFrequently:true});
+var fileInput=document.getElementById('file'),fileStatus=document.getElementById('fileStatus'),source=document.getElementById('source'),sizeEl=document.getElementById('size'),durationEl=document.getElementById('duration'),makeBtn=document.getElementById('make'),statusEl=document.getElementById('status'),resultCard=document.getElementById('resultCard'),resultVideo=document.getElementById('result'),download=document.getElementById('download'),output=document.getElementById('output'),outCtx=output.getContext('2d',{alpha:false}),track=document.getElementById('track'),trackCtx=track.getContext('2d',{willReadFrequently:true});
 var controls={handSize:document.getElementById('handSize'),tipX:document.getElementById('tipX'),tipY:document.getElementById('tipY'),offX:document.getElementById('offX'),offY:document.getElementById('offY'),sensitivity:document.getElementById('sensitivity')};
 var values={handSize:document.getElementById('handSizeV'),tipX:document.getElementById('tipXV'),tipY:document.getElementById('tipYV'),offX:document.getElementById('offXV'),offY:document.getElementById('offYV'),sensitivity:document.getElementById('sensV')};
 var side='Right',preset='source',sourceUrl=null,resultUrl=null,busy=false,videoReady=false,audioCtx=null,audioSource=null,audioDest=null,audioDelay=null;
-
 document.documentElement.setAttribute('data-app-ready','1');
 window.addEventListener('error',function(e){statusEl.textContent='Page error: '+(e.message||'Unknown browser error');statusEl.className='status error';});
-
 function pct(v){var n=Number(v);return (Math.round(n*10)/10).toString()+'%';}
-function syncLabels(){values.handSize.textContent=pct(controls.handSize.value);values.tipX.textContent=pct(controls.tipX.value);values.tipY.textContent=pct(controls.tipY.value);values.offX.textContent=pct(controls.offX.value);values.offY.textContent=pct(controls.offY.value);values.sensitivity.textContent=controls.sensitivity.value;}
-Object.keys(controls).forEach(function(k){controls[k].addEventListener('input',syncLabels);});syncLabels();
-
-document.getElementById('sideSeg').addEventListener('click',function(e){var b=e.target.closest('button[data-side]');if(!b)return;side=b.getAttribute('data-side');Array.prototype.forEach.call(b.parentNode.children,function(x){x.classList.toggle('active',x===b);});});
-document.getElementById('presetSeg').addEventListener('click',function(e){var b=e.target.closest('button[data-preset]');if(!b)return;preset=b.getAttribute('data-preset');Array.prototype.forEach.call(b.parentNode.children,function(x){x.classList.toggle('active',x===b);});});
-
-function showMetadata(){if(source.videoWidth>0&&source.videoHeight>0){sizeEl.textContent=source.videoWidth+' × '+source.videoHeight;}if(Number.isFinite(source.duration)&&source.duration>0){durationEl.textContent=source.duration.toFixed(1)+'s';}if(source.videoWidth>0&&source.videoHeight>0){videoReady=true;if(!busy){makeBtn.disabled=false;fileStatus.textContent='Video ready.';statusEl.textContent='Ready to create.';statusEl.className='status';}}}
-['loadedmetadata','loadeddata','canplay','durationchange'].forEach(function(name){source.addEventListener(name,showMetadata);});
-
-fileInput.addEventListener('change',function(){
-var f=fileInput.files&&fileInput.files[0];if(!f)return;
-videoReady=false;makeBtn.disabled=true;resultCard.classList.add('hide');statusEl.textContent='Loading video…';statusEl.className='status';fileStatus.textContent='Loading '+f.name+'…';sizeEl.textContent='—';durationEl.textContent='—';
-if(sourceUrl)URL.revokeObjectURL(sourceUrl);source.pause();source.removeAttribute('src');source.load();sourceUrl=URL.createObjectURL(f);source.src=sourceUrl;source.load();
-setTimeout(function(){showMetadata();if(!videoReady){fileStatus.textContent='Video selected. Tap play once if the preview stays black.';statusEl.textContent='Waiting for the browser to read the video.';}},1200);
-setTimeout(showMetadata,3500);
-});
-
-var handImg=new Image();handImg.crossOrigin='anonymous';var handReady=new Promise(function(resolve,reject){handImg.onload=resolve;handImg.onerror=function(){reject(new Error('The built-in hand image could not load.'));};});handImg.src=HAND_SRC;
-
-function chooseMime(){var list=['video/mp4;codecs="avc1.42E01E,mp4a.40.2"','video/mp4','video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'];for(var i=0;i<list.length;i++){if(window.MediaRecorder&&MediaRecorder.isTypeSupported(list[i]))return list[i];}return '';}
-function outputSize(vw,vh){var w=vw,h=vh;if(preset==='reel'){h=Math.min(1280,vh);w=Math.round(h*9/16);}else if(preset==='youtube'){w=Math.min(1280,vw);h=Math.round(w*9/16);}else{var s=Math.min(1,1280/Math.max(vw,vh));w=Math.round(vw*s);h=Math.round(vh*s);}w=Math.max(2,w-(w%2));h=Math.max(2,h-(h%2));return[w,h];}
-function drawFitted(ctx,img,w,h){var sw=img.videoWidth,sh=img.videoHeight;var scale=Math.min(w/sw,h/sh),dw=sw*scale,dh=sh*scale,dx=(w-dw)/2,dy=(h-dh)/2;ctx.fillStyle='#000';ctx.fillRect(0,0,w,h);ctx.drawImage(img,dx,dy,dw,dh);return{dx:dx,dy:dy,dw:dw,dh:dh,sx:dw/sw,sy:dh/sh};}
-function median(arr){if(!arr.length)return 0;var a=arr.slice().sort(function(x,y){return x-y;});return a[Math.floor(a.length/2)];}
-
-function makeTracker(vw,vh){
-var tw=Math.min(280,vw),th=Math.max(2,Math.round(vh*tw/vw));track.width=tw;track.height=th;
-var history=[],baseline=null,baselineFrames=[],tracked=null,idle=999,candidates=[],historyLen=6;
-function frame(){
-trackCtx.drawImage(source,0,0,tw,th);var data=trackCtx.getImageData(0,0,tw,th).data;var rgb=new Uint8Array(tw*th*3);for(var p=0,j=0;p<data.length;p+=4){rgb[j++]=data[p];rgb[j++]=data[p+1];rgb[j++]=data[p+2];}
-if(!baseline){baselineFrames.push(rgb);if(baselineFrames.length>=8){baseline=new Float32Array(rgb.length);for(var i=0;i<rgb.length;i++){var vals=[];for(var n=0;n<baselineFrames.length;n++)vals.push(baselineFrames[n][i]);baseline[i]=median(vals);}history.push(rgb);}return{point:tracked,idle:idle};}
-history.push(rgb);if(history.length<=historyLen)return{point:tracked,idle:idle};var old=history.shift();
-var sens=Number(controls.sensitivity.value);var motionThreshold=Math.max(15,sens*2.15);var radialPrimary=Math.max(4,sens*.48);var radialFallback=Math.max(7,sens*.78);var guardTop=Math.max(1,Math.floor(th*.035)),guardSide=Math.max(1,Math.floor(tw*.018));var cell=14,cols=Math.ceil(tw/cell),rows=Math.ceil(th/cell),len=cols*rows;var counts=new Uint16Array(len),sx=new Float32Array(len),sy=new Float32Array(len);var prev=tracked?{x:tracked.x*tw/vw,y:tracked.y*th/vh}:null;var maxJump=220*tw/vw;
-for(var y=guardTop;y<th;y++)for(var x=guardSide;x<tw-guardSide;x++){var q=(y*tw+x)*3;var mr=Math.abs(rgb[q]-old[q]),mg=Math.abs(rgb[q+1]-old[q+1]),mb=Math.abs(rgb[q+2]-old[q+2]);var motion=mr+mg+mb;if(motion<motionThreshold)continue;var cb=Math.abs(rgb[q]-baseline[q])+Math.abs(rgb[q+1]-baseline[q+1])+Math.abs(rgb[q+2]-baseline[q+2]);var ob=Math.abs(old[q]-baseline[q])+Math.abs(old[q+1]-baseline[q+1])+Math.abs(old[q+2]-baseline[q+2]);var radial=cb-ob;var primary=radial>=radialPrimary;var fallback=tracked&&Math.abs(radial)>=radialFallback;if(!primary&&!fallback)continue;if(prev&&Math.hypot(x-prev.x,y-prev.y)>maxJump)continue;var ci=Math.floor(y/cell)*cols+Math.floor(x/cell);counts[ci]++;sx[ci]+=x;sy[ci]+=y;}
-var best=-1,bestScore=-1e9;for(var c=0;c<len;c++){if(counts[c]<4)continue;var cx=sx[c]/counts[c],cy=sy[c]/counts[c];var score=counts[c];if(prev)score-=Math.hypot(cx-prev.x,cy-prev.y)*.10;if(score>bestScore){bestScore=score;best=c;}}
-if(best>=0){var candidate={x:(sx[best]/counts[best])*vw/tw,y:(sy[best]/counts[best])*vh/th};candidates.push(candidate);if(candidates.length>5)candidates.shift();var xs=candidates.map(function(v){return v.x;}),ys=candidates.map(function(v){return v.y;});candidate={x:median(xs),y:median(ys)};if(!tracked)tracked=candidate;else{var dx=candidate.x-tracked.x,dy=candidate.y-tracked.y,d=Math.hypot(dx,dy);var dead=Math.max(3,vw*.0065);if(d>dead){var maxStep=Math.max(14,vw*.045),step=Math.min(1,maxStep/Math.max(d,.001)),alpha=.42;tracked={x:tracked.x*(1-alpha)+(tracked.x+dx*step)*alpha,y:tracked.y*(1-alpha)+(tracked.y+dy*step)*alpha};}}idle=0;}else idle++;
-return{point:tracked,idle:idle};
-}
-return{frame:frame};
-}
-
-async function setupAudio(){
-var AC=window.AudioContext||window.webkitAudioContext;if(!AC)return null;
-if(!audioCtx){audioCtx=new AC();audioSource=audioCtx.createMediaElementSource(source);audioDelay=audioCtx.createDelay(1);audioDelay.delayTime.value=LEAD_SECONDS;audioDest=audioCtx.createMediaStreamDestination();audioSource.connect(audioDelay);audioDelay.connect(audioDest);}
-if(audioCtx.state==='suspended')await audioCtx.resume();return audioDest.stream;
-}
-
-async function seekStart(){source.pause();try{source.currentTime=0;}catch(e){}await new Promise(function(resolve){if(source.readyState>=2){resolve();return;}var done=false;function finish(){if(done)return;done=true;source.removeEventListener('loadeddata',finish);source.removeEventListener('seeked',finish);resolve();}source.addEventListener('loadeddata',finish,{once:true});source.addEventListener('seeked',finish,{once:true});setTimeout(finish,1600);});}
-
-async function run(){
-if(busy||!videoReady)return;
-if(!window.MediaRecorder||typeof output.captureStream!=='function'){statusEl.textContent='This browser cannot export from the canvas. Please open this page in Safari or Chrome on a current iPad/iPhone/Mac.';statusEl.className='status error';return;}
-busy=true;makeBtn.disabled=true;resultCard.classList.add('hide');statusEl.className='status';statusEl.textContent='Preparing…';
-var canvasStream=null,recorder=null;
-try{
-await handReady;await seekStart();var vw=source.videoWidth,vh=source.videoHeight;if(!vw||!vh)throw new Error('The video dimensions are not ready.');var dims=outputSize(vw,vh),ow=dims[0],oh=dims[1];output.width=ow;output.height=oh;var fit=drawFitted(outCtx,source,ow,oh);var fps=30,leadFrames=Math.max(1,Math.round(fps*LEAD_SECONDS));var buffer=[];var tracker=makeTracker(vw,vh);canvasStream=output.captureStream(fps);var audioStream=await setupAudio();var tracks=canvasStream.getVideoTracks().slice();if(audioStream)tracks=tracks.concat(audioStream.getAudioTracks());var combined=new MediaStream(tracks);var mime=chooseMime();recorder=new MediaRecorder(combined,mime?{mimeType:mime,videoBitsPerSecond:8000000}:{videoBitsPerSecond:8000000});var chunks=[];recorder.ondataavailable=function(e){if(e.data&&e.data.size)chunks.push(e.data);};var stopped=new Promise(function(resolve){recorder.onstop=resolve;});
-function drawHand(point,fitInfo){var handW=ow*(Number(controls.handSize.value)/100),handH=handW*(handImg.naturalHeight/handImg.naturalWidth);var px=fitInfo.dx+point.x*fitInfo.sx+ow*(Number(controls.offX.value)/100),py=fitInfo.dy+point.y*fitInfo.sy+oh*(Number(controls.offY.value)/100);var tx=handW*(Number(controls.tipX.value)/100),ty=handH*(Number(controls.tipY.value)/100);outCtx.save();outCtx.globalAlpha=.96;if(side==='Left'){tx=handW-tx;var x=px-tx,y=py-ty;outCtx.translate(x+handW,y);outCtx.scale(-1,1);outCtx.drawImage(handImg,0,0,handW,handH);}else outCtx.drawImage(handImg,px-tx,py-ty,handW,handH);outCtx.restore();}
-recorder.start(500);var ended=false;source.onended=function(){ended=true;};await source.play();
-var lastTime=-1,lastPoint=null,lastIdle=999;
-while(!ended&&!source.ended){await new Promise(function(resolve){var done=false,timer=null;function finish(){if(done)return;done=true;if(timer)clearTimeout(timer);source.removeEventListener('ended',finish);resolve();}source.addEventListener('ended',finish,{once:true});if(source.requestVideoFrameCallback)source.requestVideoFrameCallback(function(){finish();});timer=setTimeout(finish,80);});if(ended||source.ended)break;if(source.currentTime===lastTime)continue;lastTime=source.currentTime;var frameCanvas=document.createElement('canvas');frameCanvas.width=ow;frameCanvas.height=oh;var frameCtx=frameCanvas.getContext('2d',{alpha:false});fit=drawFitted(frameCtx,source,ow,oh);var tr=tracker.frame();lastPoint=tr.point;lastIdle=tr.idle;buffer.push({canvas:frameCanvas,fit:fit});if(buffer.length>leadFrames){var oldFrame=buffer.shift();outCtx.drawImage(oldFrame.canvas,0,0);if(lastPoint&&lastIdle<=Math.max(12,Math.round(fps*.45)))drawHand(lastPoint,oldFrame.fit);}statusEl.textContent='Processing… '+Math.min(100,Math.round((source.currentTime/source.duration)*100))+'%';}
-while(buffer.length){var tail=buffer.shift();outCtx.drawImage(tail.canvas,0,0);if(lastPoint&&lastIdle<=Math.max(12,Math.round(fps*.45)))drawHand(lastPoint,tail.fit);await new Promise(function(r){setTimeout(r,34);});}
-recorder.stop();await stopped;source.pause();var blob=new Blob(chunks,{type:recorder.mimeType||mime||'video/webm'});if(!blob.size)throw new Error('The browser created an empty video.');if(resultUrl)URL.revokeObjectURL(resultUrl);resultUrl=URL.createObjectURL(blob);resultVideo.src=resultUrl;var ext=blob.type.indexOf('mp4')>=0?'mp4':'webm';download.href=resultUrl;download.download='drawing-hand.'+ext;download.textContent='Download '+ext.toUpperCase();resultCard.classList.remove('hide');statusEl.textContent='Finished.';
-}catch(err){console.error(err);statusEl.textContent='Could not create the video: '+(err&&err.message?err.message:String(err));statusEl.className='status error';}
-finally{if(canvasStream)canvasStream.getTracks().forEach(function(t){t.stop();});source.controls=true;busy=false;makeBtn.disabled=!videoReady;}
-}
-makeBtn.addEventListener('click',run);
-})();
-</script>
-</body>
-</html>
+function syncLabels(){values.handSize.textContent=pct(controls.handSize.value);values.tipX.textContent=pct(controls.tipX.value);values.tipY.textContent=pct(controls.tipY.
