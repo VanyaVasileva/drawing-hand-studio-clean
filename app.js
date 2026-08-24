@@ -1,14 +1,26 @@
 (()=>{'use strict';
-const $=id=>document.getElementById(id), HAND='https://raw.githubusercontent.com/VanyaVasileva/drawing-hand-studio/main/assets/default_hand.png', LEAD=.07;
+const $=id=>document.getElementById(id), LEAD=.07;
+const HANDS={
+ default:'https://raw.githubusercontent.com/VanyaVasileva/drawing-hand-studio/main/assets/default_hand.png',
+ cream:'assets/hand-cream-sleeve.png',
+ sage:'assets/hand-sage-sleeve.png',
+ pink:'assets/hand-pink-sleeve.png',
+ dark:'assets/hand-dark-sleeve.png',
+ brownOatmeal:'assets/hand-brown-oatmeal.png'
+};
 const file=$('file'),source=$('source'),make=$('make'),status=$('status'),fileStatus=$('fileStatus'),size=$('size'),duration=$('duration'),resultCard=$('resultCard'),result=$('result'),download=$('download'),out=$('output'),oc=out.getContext('2d',{alpha:false}),track=$('track'),tc=track.getContext('2d',{willReadFrequently:true});
 const c={handSize:$('handSize'),tipX:$('tipX'),tipY:$('tipY'),offX:$('offX'),offY:$('offY'),sensitivity:$('sensitivity')},v={handSize:$('handSizeV'),tipX:$('tipXV'),tipY:$('tipYV'),offX:$('offXV'),offY:$('offYV'),sensitivity:$('sensV')};
-let side='Right',preset='source',srcURL,resURL,busy=false,ready=false,aCtx,aSrc,aDest,aDelay;
+let side='Right',preset='source',handStyle='default',srcURL,resURL,busy=false,ready=false,aCtx,aSrc,aDest,aDelay;
 const pct=x=>(Math.round(+x*10)/10)+'%'; function labels(){v.handSize.textContent=pct(c.handSize.value);v.tipX.textContent=pct(c.tipX.value);v.tipY.textContent=pct(c.tipY.value);v.offX.textContent=pct(c.offX.value);v.offY.textContent=pct(c.offY.value);v.sensitivity.textContent=c.sensitivity.value} Object.values(c).forEach(x=>x.oninput=labels);labels();
-function seg(id,set){$(id).onclick=e=>{let b=e.target.closest('button');if(!b)return;[...b.parentNode.children].forEach(x=>x.classList.toggle('on',x===b));set(b.dataset.v)}} seg('side',x=>side=x);seg('preset',x=>preset=x);
+function seg(id,set){let el=$(id);if(!el)return;el.onclick=e=>{let b=e.target.closest('button');if(!b)return;[...b.parentNode.children].forEach(x=>x.classList.toggle('on',x===b));set(b.dataset.v)}} seg('side',x=>side=x);seg('preset',x=>preset=x);
+function setHandButton(name){let el=$('handStyle');if(!el)return;[...el.querySelectorAll('button')].forEach(b=>b.classList.toggle('on',b.dataset.v===name))}
+const hand=new Image();hand.crossOrigin='anonymous';let handReady=Promise.resolve();
+function loadHandStyle(name){handStyle=HANDS[name]?name:'default';handReady=new Promise((ok,no)=>{hand.onload=()=>{if(ready&&!busy)status.textContent='Ready to create.';ok()};hand.onerror=()=>{if(handStyle!=='default'){let failed=handStyle;handStyle='default';setHandButton('default');status.textContent='Hand image not found: '+failed+'. Add its PNG to the assets folder.';hand.onload=()=>ok();hand.onerror=()=>no(Error('Built-in hand image could not load'));hand.src=HANDS.default}else no(Error('Built-in hand image could not load'))};hand.src=HANDS[handStyle]});return handReady}
+loadHandStyle('default');
+seg('handStyle',x=>loadHandStyle(x));
 function meta(){if(source.videoWidth&&source.videoHeight){size.textContent=source.videoWidth+' × '+source.videoHeight;duration.textContent=isFinite(source.duration)?source.duration.toFixed(1)+'s':'—';ready=true;if(!busy)make.disabled=false;fileStatus.textContent='Video ready.';status.textContent='Ready to create.'}}
 ['loadedmetadata','loadeddata','canplay','durationchange'].forEach(x=>source.addEventListener(x,meta));
 file.onchange=()=>{let f=file.files&&file.files[0];if(!f)return;ready=false;make.disabled=true;resultCard.classList.add('hide');fileStatus.textContent='Loading '+f.name+'…';status.textContent='Loading video…';if(srcURL)URL.revokeObjectURL(srcURL);source.pause();source.removeAttribute('src');source.load();srcURL=URL.createObjectURL(f);source.src=srcURL;source.load();setTimeout(meta,800);setTimeout(meta,2500)};
-const hand=new Image();hand.crossOrigin='anonymous';const handReady=new Promise((ok,no)=>{hand.onload=ok;hand.onerror=()=>no(Error('Built-in hand image could not load'))});hand.src=HAND;
 function mime(){for(const x of ['video/mp4;codecs="avc1.42E01E,mp4a.40.2"','video/mp4','video/webm;codecs=vp8,opus','video/webm'])if(window.MediaRecorder&&MediaRecorder.isTypeSupported(x))return x;return ''}
 function dims(w,h){if(preset==='reel'){h=Math.min(1280,h);w=Math.round(h*9/16)}else if(preset==='youtube'){w=Math.min(1280,w);h=Math.round(w*9/16)}else{let s=Math.min(1,1280/Math.max(w,h));w=Math.round(w*s);h=Math.round(h*s)}return[Math.max(2,w-w%2),Math.max(2,h-h%2)]}
 function fit(ctx,img,w,h){let sw=img.videoWidth,sh=img.videoHeight,s=Math.min(w/sw,h/sh),dw=sw*s,dh=sh*s,dx=(w-dw)/2,dy=(h-dh)/2;ctx.fillStyle='#000';ctx.fillRect(0,0,w,h);ctx.drawImage(img,dx,dy,dw,dh);return{dx,dy,s}}
