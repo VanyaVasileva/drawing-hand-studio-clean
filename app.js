@@ -75,14 +75,26 @@ function tracker(vw,vh){
 }
 async function audio(){const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return null;if(!aCtx){aCtx=new AC;aSrc=aCtx.createMediaElementSource(source);aDelay=aCtx.createDelay(1);aDelay.delayTime.value=LEAD;aDest=aCtx.createMediaStreamDestination();aSrc.connect(aDelay);aDelay.connect(aDest)}if(aCtx.state==='suspended')await aCtx.resume();return aDest.stream}
 async function start(){source.pause();try{source.currentTime=0}catch{};if(source.readyState<2)await new Promise(r=>{let done=false;const f=()=>{if(done)return;done=true;source.removeEventListener('loadeddata',f);r()};source.addEventListener('loadeddata',f,{once:true});setTimeout(f,1200)})}
-function drawHand(p,F,w,h){
+function drawHand(p,F,w,h,frame){
   const px=F.dx+p.x*F.s+w*(+c.offX.value/100),py=F.dy+p.y*F.s+h*(+c.offY.value/100);
   if(handStyle==='cursor'){
-    const base=Math.min(w,h),r=Math.max(9,base*(.012+(+c.handSize.value/100)*.022));
+    const base=Math.min(w,h),size=+c.handSize.value/100,r=Math.max(18,base*(.022+size*.04)),zoom=1.085,sr=r/zoom;
     oc.save();
-    oc.beginPath();oc.arc(px,py,r,0,Math.PI*2);oc.fillStyle='rgba(255,255,255,.18)';oc.fill();
-    oc.lineWidth=Math.max(2,base*.0022);oc.strokeStyle='rgba(20,20,20,.82)';oc.stroke();
-    oc.beginPath();oc.arc(px,py,Math.max(2.5,r*.13),0,Math.PI*2);oc.fillStyle='rgba(20,20,20,.72)';oc.fill();
+    oc.beginPath();oc.arc(px,py,r,0,Math.PI*2);oc.clip();
+    if(frame){quality(oc);oc.drawImage(frame,px-sr,py-sr,sr*2,sr*2,px-r,py-r,r*2,r*2)}
+    const glass=oc.createRadialGradient(px-r*.38,py-r*.42,r*.08,px,py,r);
+    glass.addColorStop(0,'rgba(255,255,255,.28)');glass.addColorStop(.42,'rgba(255,255,255,.11)');glass.addColorStop(.78,'rgba(255,255,255,.035)');glass.addColorStop(1,'rgba(255,255,255,.18)');
+    oc.fillStyle=glass;oc.fillRect(px-r,py-r,r*2,r*2);
+    oc.restore();
+
+    oc.save();
+    oc.shadowColor='rgba(0,0,0,.16)';oc.shadowBlur=Math.max(5,r*.18);oc.shadowOffsetY=Math.max(1,r*.045);
+    oc.beginPath();oc.arc(px,py,r,0,Math.PI*2);oc.lineWidth=Math.max(1.8,base*.0018);oc.strokeStyle='rgba(255,255,255,.78)';oc.stroke();
+    oc.shadowColor='transparent';
+    oc.beginPath();oc.arc(px,py,r-Math.max(2,r*.055),Math.PI*.08,Math.PI*1.1);oc.lineWidth=Math.max(1.2,r*.035);oc.strokeStyle='rgba(255,255,255,.45)';oc.stroke();
+    oc.beginPath();oc.arc(px,py,r-Math.max(2,r*.08),Math.PI*1.08,Math.PI*1.9);oc.lineWidth=Math.max(1,r*.025);oc.strokeStyle='rgba(20,20,20,.12)';oc.stroke();
+    oc.beginPath();oc.arc(px-r*.30,py-r*.34,r*.13,0,Math.PI*2);oc.fillStyle='rgba(255,255,255,.34)';oc.fill();
+    oc.beginPath();oc.arc(px,py,Math.max(2.8,r*.065),0,Math.PI*2);oc.fillStyle='rgba(28,28,28,.48)';oc.fill();
     oc.restore();
     return;
   }
@@ -99,10 +111,10 @@ make.onclick=async()=>{
     while(!ended&&!source.ended){
       await new Promise(r=>source.requestVideoFrameCallback?source.requestVideoFrameCallback(()=>r()):setTimeout(r,34));if(source.currentTime===last)continue;last=source.currentTime;
       const slot=pool[frameNo%pool.length];slot.F=fit(slot.ctx,source,w,h);P=trk().pos;
-      if(frameNo>=lead){const z=pool[(frameNo-lead)%pool.length];quality(oc);oc.drawImage(z.cv,0,0);if(P)drawHand(P,z.F,w,h)}
+      if(frameNo>=lead){const z=pool[(frameNo-lead)%pool.length];quality(oc);oc.drawImage(z.cv,0,0);if(P)drawHand(P,z.F,w,h,z.cv)}
       frameNo++;const pc=Math.min(100,Math.round(source.currentTime/dur*100));status.textContent=(longVideo?'Long video — keep this tab open. ':'Processing full resolution… ')+pc+'%';
     }
-    for(let k=Math.max(0,frameNo-lead);k<frameNo;k++){const z=pool[k%pool.length];quality(oc);oc.drawImage(z.cv,0,0);if(P)drawHand(P,z.F,w,h);await new Promise(r=>setTimeout(r,34))}
+    for(let k=Math.max(0,frameNo-lead);k<frameNo;k++){const z=pool[k%pool.length];quality(oc);oc.drawImage(z.cv,0,0);if(P)drawHand(P,z.F,w,h,z.cv);await new Promise(r=>setTimeout(r,34))}
     rec.stop();await stopped;const blob=new Blob(chunks,{type:rec.mimeType||m||'video/webm'});if(!blob.size)throw Error('The browser created an empty video.');if(resURL)URL.revokeObjectURL(resURL);resURL=URL.createObjectURL(blob);result.src=resURL;const ext=blob.type.includes('mp4')?'mp4':'webm';download.href=resURL;download.download='drawing-hand.'+ext;download.textContent='Download '+ext.toUpperCase();resultCard.classList.remove('hide');status.textContent='Finished at '+w+' × '+h+'.';
   }catch(e){console.error(e);status.textContent='Could not create video: '+e.message;status.classList.add('err')}
   finally{if(cs)cs.getTracks().forEach(t=>t.stop());await releaseWake();busy=false;make.disabled=!ready}
