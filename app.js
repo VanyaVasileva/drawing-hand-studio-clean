@@ -78,23 +78,25 @@ async function start(){source.pause();try{source.currentTime=0}catch{};if(source
 function drawHand(p,F,w,h,frame){
   const px=F.dx+p.x*F.s+w*(+c.offX.value/100),py=F.dy+p.y*F.s+h*(+c.offY.value/100);
   if(handStyle==='cursor'){
-    const base=Math.min(w,h),size=+c.handSize.value/100,r=Math.max(18,base*(.022+size*.04)),zoom=1.085,sr=r/zoom;
+    const base=Math.min(w,h),size=+c.handSize.value/100,r=Math.max(22,base*(.026+size*.045)),zoom=1.09,sr=r/zoom;
     oc.save();
     oc.beginPath();oc.arc(px,py,r,0,Math.PI*2);oc.clip();
     if(frame){quality(oc);oc.drawImage(frame,px-sr,py-sr,sr*2,sr*2,px-r,py-r,r*2,r*2)}
-    const glass=oc.createRadialGradient(px-r*.38,py-r*.42,r*.08,px,py,r);
-    glass.addColorStop(0,'rgba(255,255,255,.28)');glass.addColorStop(.42,'rgba(255,255,255,.11)');glass.addColorStop(.78,'rgba(255,255,255,.035)');glass.addColorStop(1,'rgba(255,255,255,.18)');
+    const glass=oc.createRadialGradient(px-r*.38,py-r*.42,r*.06,px,py,r);
+    glass.addColorStop(0,'rgba(255,255,255,.46)');glass.addColorStop(.38,'rgba(255,255,255,.24)');glass.addColorStop(.76,'rgba(255,255,255,.10)');glass.addColorStop(1,'rgba(255,255,255,.30)');
     oc.fillStyle=glass;oc.fillRect(px-r,py-r,r*2,r*2);
     oc.restore();
 
     oc.save();
-    oc.shadowColor='rgba(0,0,0,.16)';oc.shadowBlur=Math.max(5,r*.18);oc.shadowOffsetY=Math.max(1,r*.045);
-    oc.beginPath();oc.arc(px,py,r,0,Math.PI*2);oc.lineWidth=Math.max(1.8,base*.0018);oc.strokeStyle='rgba(255,255,255,.78)';oc.stroke();
+    oc.shadowColor='rgba(0,0,0,.28)';oc.shadowBlur=Math.max(8,r*.26);oc.shadowOffsetY=Math.max(2,r*.065);
+    oc.beginPath();oc.arc(px,py,r,0,Math.PI*2);oc.lineWidth=Math.max(3,base*.0028);oc.strokeStyle='rgba(18,18,18,.34)';oc.stroke();
     oc.shadowColor='transparent';
-    oc.beginPath();oc.arc(px,py,r-Math.max(2,r*.055),Math.PI*.08,Math.PI*1.1);oc.lineWidth=Math.max(1.2,r*.035);oc.strokeStyle='rgba(255,255,255,.45)';oc.stroke();
-    oc.beginPath();oc.arc(px,py,r-Math.max(2,r*.08),Math.PI*1.08,Math.PI*1.9);oc.lineWidth=Math.max(1,r*.025);oc.strokeStyle='rgba(20,20,20,.12)';oc.stroke();
-    oc.beginPath();oc.arc(px-r*.30,py-r*.34,r*.13,0,Math.PI*2);oc.fillStyle='rgba(255,255,255,.34)';oc.fill();
-    oc.beginPath();oc.arc(px,py,Math.max(2.8,r*.065),0,Math.PI*2);oc.fillStyle='rgba(28,28,28,.48)';oc.fill();
+    oc.beginPath();oc.arc(px,py,r-Math.max(2.5,r*.055),0,Math.PI*2);oc.lineWidth=Math.max(2,base*.0022);oc.strokeStyle='rgba(255,255,255,.94)';oc.stroke();
+    oc.beginPath();oc.arc(px,py,r-Math.max(4,r*.11),Math.PI*.10,Math.PI*1.02);oc.lineWidth=Math.max(2,r*.045);oc.strokeStyle='rgba(255,255,255,.74)';oc.stroke();
+    oc.beginPath();oc.arc(px,py,r-Math.max(4,r*.12),Math.PI*1.08,Math.PI*1.88);oc.lineWidth=Math.max(1.5,r*.032);oc.strokeStyle='rgba(20,20,20,.20)';oc.stroke();
+    oc.beginPath();oc.arc(px-r*.30,py-r*.34,r*.15,0,Math.PI*2);oc.fillStyle='rgba(255,255,255,.58)';oc.fill();
+    oc.beginPath();oc.arc(px,py,Math.max(4,r*.075),0,Math.PI*2);oc.fillStyle='rgba(24,24,24,.68)';oc.fill();
+    oc.beginPath();oc.arc(px-r*.018,py-r*.018,Math.max(1.5,r*.026),0,Math.PI*2);oc.fillStyle='rgba(255,255,255,.88)';oc.fill();
     oc.restore();
     return;
   }
