@@ -14,7 +14,14 @@ seg('side',x=>side=x);seg('preset',x=>preset=x);
 function setHandButton(name){const el=$('handStyle');if(!el)return;[...el.querySelectorAll('button')].forEach(b=>b.classList.toggle('on',b.dataset.v===name))}
 function applyHandMeta(name){const m=HAND_META[name]||HAND_META.default;c.tipX.value=m.tipX;c.tipY.value=m.tipY;labels()}
 const hand=new Image();hand.crossOrigin='anonymous';let handReady=Promise.resolve();
-function loadHandStyle(name){handStyle=HANDS[name]?name:'default';applyHandMeta(handStyle);handReady=new Promise((ok,no)=>{hand.onload=()=>{if(ready&&!busy)status.textContent='Ready to create.';ok()};hand.onerror=()=>{if(handStyle!=='default'){const failed=handStyle;handStyle='default';setHandButton('default');applyHandMeta('default');status.textContent='Hand image not found: '+failed+'.';hand.onload=()=>ok();hand.onerror=()=>no(Error('Built-in hand image could not load'));hand.src=HANDS.default}else no(Error('Built-in hand image could not load'))};hand.src=HANDS[handStyle]});return handReady}
+function loadHandStyle(name){
+  if(name==='cursor'){
+    handStyle='cursor';
+    handReady=Promise.resolve();
+    if(ready&&!busy)status.textContent='Ready to create.';
+    return handReady;
+  }
+  handStyle=HANDS[name]?name:'default';applyHandMeta(handStyle);handReady=new Promise((ok,no)=>{hand.onload=()=>{if(ready&&!busy)status.textContent='Ready to create.';ok()};hand.onerror=()=>{if(handStyle!=='default'){const failed=handStyle;handStyle='default';setHandButton('default');applyHandMeta('default');status.textContent='Hand image not found: '+failed+'.';hand.onload=()=>ok();hand.onerror=()=>no(Error('Built-in hand image could not load'));hand.src=HANDS.default}else no(Error('Built-in hand image could not load'))};hand.src=HANDS[handStyle]});return handReady}
 loadHandStyle('default');seg('handStyle',x=>loadHandStyle(x));
 function meta(){if(source.videoWidth&&source.videoHeight){size.textContent=source.videoWidth+' × '+source.videoHeight;duration.textContent=isFinite(source.duration)?source.duration.toFixed(1)+'s':'—';ready=true;if(!busy)make.disabled=false;fileStatus.textContent='Video ready.';status.textContent=source.duration>90?'Ready. Long videos process in real time — keep this tab open.':'Ready to create.'}}
 ['loadedmetadata','loadeddata','canplay','durationchange'].forEach(x=>source.addEventListener(x,meta));
@@ -68,7 +75,18 @@ function tracker(vw,vh){
 }
 async function audio(){const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return null;if(!aCtx){aCtx=new AC;aSrc=aCtx.createMediaElementSource(source);aDelay=aCtx.createDelay(1);aDelay.delayTime.value=LEAD;aDest=aCtx.createMediaStreamDestination();aSrc.connect(aDelay);aDelay.connect(aDest)}if(aCtx.state==='suspended')await aCtx.resume();return aDest.stream}
 async function start(){source.pause();try{source.currentTime=0}catch{};if(source.readyState<2)await new Promise(r=>{let done=false;const f=()=>{if(done)return;done=true;source.removeEventListener('loadeddata',f);r()};source.addEventListener('loadeddata',f,{once:true});setTimeout(f,1200)})}
-function drawHand(p,F,w,h){const hm=HAND_META[handStyle]||HAND_META.default,hw=w*(+c.handSize.value/100)*hm.scale,hh=hw*hand.naturalHeight/hand.naturalWidth,px=F.dx+p.x*F.s+w*(+c.offX.value/100),py=F.dy+p.y*F.s+h*(+c.offY.value/100),tx0=hw*(+c.tipX.value/100),ty=hh*(+c.tipY.value/100);let tx=tx0;oc.save();quality(oc);oc.globalAlpha=1;if(side==='Left'){tx=hw-tx;const x=px-tx,y=py-ty;oc.translate(x+hw,y);oc.scale(-1,1);oc.drawImage(hand,0,0,hw,hh)}else oc.drawImage(hand,px-tx,py-ty,hw,hh);oc.restore()}
+function drawHand(p,F,w,h){
+  const px=F.dx+p.x*F.s+w*(+c.offX.value/100),py=F.dy+p.y*F.s+h*(+c.offY.value/100);
+  if(handStyle==='cursor'){
+    const base=Math.min(w,h),r=Math.max(9,base*(.012+(+c.handSize.value/100)*.022));
+    oc.save();
+    oc.beginPath();oc.arc(px,py,r,0,Math.PI*2);oc.fillStyle='rgba(255,255,255,.18)';oc.fill();
+    oc.lineWidth=Math.max(2,base*.0022);oc.strokeStyle='rgba(20,20,20,.82)';oc.stroke();
+    oc.beginPath();oc.arc(px,py,Math.max(2.5,r*.13),0,Math.PI*2);oc.fillStyle='rgba(20,20,20,.72)';oc.fill();
+    oc.restore();
+    return;
+  }
+  const hm=HAND_META[handStyle]||HAND_META.default,hw=w*(+c.handSize.value/100)*hm.scale,hh=hw*hand.naturalHeight/hand.naturalWidth,tx0=hw*(+c.tipX.value/100),ty=hh*(+c.tipY.value/100);let tx=tx0;oc.save();quality(oc);oc.globalAlpha=1;if(side==='Left'){tx=hw-tx;const x=px-tx,y=py-ty;oc.translate(x+hw,y);oc.scale(-1,1);oc.drawImage(hand,0,0,hw,hh)}else oc.drawImage(hand,px-tx,py-ty,hw,hh);oc.restore()}
 make.onclick=async()=>{
   if(busy||!ready)return;if(!MediaRecorder||!out.captureStream){status.textContent='This browser cannot export this video.';return}
   busy=true;make.disabled=true;resultCard.classList.add('hide');status.classList.remove('err');const dur=source.duration||0,longVideo=dur>90;status.textContent=longVideo?'Preparing long video… keep this tab open and the iPad unlocked.':'Preparing full-resolution video…';let cs;
