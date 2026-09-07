@@ -88,15 +88,14 @@ function drawHand(p,F,w,h,frame){
     oc.restore();
 
     oc.save();
-    oc.shadowColor='rgba(0,0,0,.28)';oc.shadowBlur=Math.max(8,r*.26);oc.shadowOffsetY=Math.max(2,r*.065);
-    oc.beginPath();oc.arc(px,py,r,0,Math.PI*2);oc.lineWidth=Math.max(3,base*.0028);oc.strokeStyle='rgba(18,18,18,.34)';oc.stroke();
+    oc.shadowColor='rgba(0,0,0,.24)';oc.shadowBlur=Math.max(8,r*.24);oc.shadowOffsetY=Math.max(2,r*.06);
+    oc.beginPath();oc.arc(px,py,r,0,Math.PI*2);oc.lineWidth=Math.max(2.4,base*.0025);oc.strokeStyle='rgba(18,18,18,.28)';oc.stroke();
     oc.shadowColor='transparent';
-    oc.beginPath();oc.arc(px,py,r-Math.max(2.5,r*.055),0,Math.PI*2);oc.lineWidth=Math.max(2,base*.0022);oc.strokeStyle='rgba(255,255,255,.94)';oc.stroke();
-    oc.beginPath();oc.arc(px,py,r-Math.max(4,r*.11),Math.PI*.10,Math.PI*1.02);oc.lineWidth=Math.max(2,r*.045);oc.strokeStyle='rgba(255,255,255,.74)';oc.stroke();
-    oc.beginPath();oc.arc(px,py,r-Math.max(4,r*.12),Math.PI*1.08,Math.PI*1.88);oc.lineWidth=Math.max(1.5,r*.032);oc.strokeStyle='rgba(20,20,20,.20)';oc.stroke();
-    oc.beginPath();oc.arc(px-r*.30,py-r*.34,r*.15,0,Math.PI*2);oc.fillStyle='rgba(255,255,255,.58)';oc.fill();
-    oc.beginPath();oc.arc(px,py,Math.max(4,r*.075),0,Math.PI*2);oc.fillStyle='rgba(24,24,24,.68)';oc.fill();
-    oc.beginPath();oc.arc(px-r*.018,py-r*.018,Math.max(1.5,r*.026),0,Math.PI*2);oc.fillStyle='rgba(255,255,255,.88)';oc.fill();
+    oc.beginPath();oc.arc(px,py,r-Math.max(2.5,r*.055),0,Math.PI*2);oc.lineWidth=Math.max(1.8,base*.002);oc.strokeStyle='rgba(255,255,255,.88)';oc.stroke();
+    oc.beginPath();oc.arc(px,py,r-Math.max(4,r*.11),Math.PI*.10,Math.PI*1.02);oc.lineWidth=Math.max(1.8,r*.038);oc.strokeStyle='rgba(255,255,255,.62)';oc.stroke();
+    oc.beginPath();oc.arc(px,py,r-Math.max(4,r*.12),Math.PI*1.08,Math.PI*1.88);oc.lineWidth=Math.max(1.3,r*.028);oc.strokeStyle='rgba(20,20,20,.16)';oc.stroke();
+    oc.beginPath();oc.arc(px-r*.30,py-r*.34,r*.15,0,Math.PI*2);oc.fillStyle='rgba(255,255,255,.52)';oc.fill();
+    oc.beginPath();oc.arc(px,py,Math.max(3.2,r*.06),0,Math.PI*2);oc.fillStyle='rgba(24,24,24,.62)';oc.fill();
     oc.restore();
     return;
   }
