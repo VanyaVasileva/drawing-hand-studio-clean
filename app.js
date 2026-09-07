@@ -94,7 +94,6 @@ function drawHand(p,F,w,h,frame){
     oc.beginPath();oc.arc(px,py,r-Math.max(2.5,r*.055),0,Math.PI*2);oc.lineWidth=Math.max(1.8,base*.002);oc.strokeStyle='rgba(255,255,255,.88)';oc.stroke();
     oc.beginPath();oc.arc(px,py,r-Math.max(4,r*.11),Math.PI*.10,Math.PI*1.02);oc.lineWidth=Math.max(1.8,r*.038);oc.strokeStyle='rgba(255,255,255,.62)';oc.stroke();
     oc.beginPath();oc.arc(px,py,r-Math.max(4,r*.12),Math.PI*1.08,Math.PI*1.88);oc.lineWidth=Math.max(1.3,r*.028);oc.strokeStyle='rgba(20,20,20,.16)';oc.stroke();
-    oc.beginPath();oc.arc(px-r*.30,py-r*.34,r*.15,0,Math.PI*2);oc.fillStyle='rgba(255,255,255,.52)';oc.fill();
     oc.beginPath();oc.arc(px,py,Math.max(3.2,r*.06),0,Math.PI*2);oc.fillStyle='rgba(24,24,24,.62)';oc.fill();
     oc.restore();
     return;
