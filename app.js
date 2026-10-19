@@ -1,7 +1,8 @@
 (()=>{'use strict';
 const $=id=>document.getElementById(id), LEAD=.07, INK_STREAMLINE=35, INK_FOLLOW=1-(INK_STREAMLINE/100)*.82;
-const HANDS={woodenPencil:'assets/hand-wooden-pencil-hd.webp',default:'https://raw.githubusercontent.com/VanyaVasileva/drawing-hand-studio/main/assets/default_hand.png',cream:'assets/hand-cream-sleeve.png',sage:'assets/hand-sage-sleeve.png',pink:'assets/hand-pink-sleeve.png',dark:'assets/hand-dark-sleeve.png',brownOatmeal:'assets/hand-brown-oatmeal.png'};
-const HAND_META={woodenPencil:{tipX:9.5,tipY:55.9,scale:1.1},default:{tipX:14.8,tipY:34.4,scale:1},cream:{tipX:9.4,tipY:26.2,scale:1.319},sage:{tipX:11.0,tipY:28.1,scale:1.292},pink:{tipX:13.8,tipY:27.4,scale:1.308},dark:{tipX:8.5,tipY:28.1,scale:1.280},brownOatmeal:{tipX:10.8,tipY:24.5,scale:1.398}};
+const HANDS={woodenPencil:'assets/hand-wooden-pencil-hd.webp',modernFineLiner:'assets/hand-modern-fineliner.png',classicInkPen:'assets/hand-classic-ink-pen.png',default:'https://raw.githubusercontent.com/VanyaVasileva/drawing-hand-studio/main/assets/default_hand.png',cream:'assets/hand-cream-sleeve.png',sage:'assets/hand-sage-sleeve.png',pink:'assets/hand-pink-sleeve.png',dark:'assets/hand-dark-sleeve.png',brownOatmeal:'assets/hand-brown-oatmeal.png'};
+const HAND_META={woodenPencil:{tipX:9.5,tipY:55.9,scale:1.1},modernFineLiner:{tipX:9.7,tipY:55.3,scale:1.1},classicInkPen:{tipX:9.6,tipY:55.6,scale:1.1},default:{tipX:14.8,tipY:34.4,scale:1},cream:{tipX:9.4,tipY:26.2,scale:1.319},sage:{tipX:11.0,tipY:28.1,scale:1.292},pink:{tipX:13.8,tipY:27.4,scale:1.308},dark:{tipX:8.5,tipY:28.1,scale:1.280},brownOatmeal:{tipX:10.8,tipY:24.5,scale:1.398}};
+const NATURAL_HANDS=new Set(['woodenPencil','modernFineLiner','classicInkPen']);
 const file=$('file'),source=$('source'),make=$('make'),status=$('status'),fileStatus=$('fileStatus'),size=$('size'),duration=$('duration'),resultCard=$('resultCard'),result=$('result'),download=$('download'),out=$('output'),oc=out.getContext('2d',{alpha:false}),track=$('track'),tc=track.getContext('2d',{willReadFrequently:true});
 const c={handSize:$('handSize'),tipX:$('tipX'),tipY:$('tipY'),offX:$('offX'),offY:$('offY'),sensitivity:$('sensitivity')};
 const v={handSize:$('handSizeV'),tipX:$('tipXV'),tipY:$('tipYV'),offX:$('offXV'),offY:$('offYV'),sensitivity:$('sensV')};
@@ -16,7 +17,7 @@ function applyHandMeta(name){const m=HAND_META[name]||HAND_META.default;c.tipX.v
 let handSprite=null;
 function prepareHandSprite(){
   handSprite=null;
-  if(handStyle!=='woodenPencil')return;
+  if(!NATURAL_HANDS.has(handStyle))return;
   const cv=document.createElement('canvas');cv.width=hand.naturalWidth;cv.height=hand.naturalHeight;
   const ctx=cv.getContext('2d');ctx.drawImage(hand,0,0);
   const pixels=ctx.getImageData(0,0,cv.width,cv.height);
@@ -108,7 +109,7 @@ function drawHand(p,F,w,h,frame){
     oc.restore();
     return;
   }
-  const hm=HAND_META[handStyle]||HAND_META.default,hw=w*(+c.handSize.value/100)*hm.scale,hh=hw*hand.naturalHeight/hand.naturalWidth,tx0=hw*(+c.tipX.value/100),ty=hh*(+c.tipY.value/100);let tx=tx0;oc.save();quality(oc);oc.globalAlpha=1;if(handStyle==='woodenPencil'){oc.shadowColor='rgba(40,28,18,.16)';oc.shadowBlur=Math.max(1,hw*.005);oc.shadowOffsetX=hw*.0015;oc.shadowOffsetY=hw*.003;}if(side==='Left'){tx=hw-tx;const x=px-tx,y=py-ty;oc.translate(x+hw,y);oc.scale(-1,1);oc.drawImage(handSprite||hand,0,0,hw,hh)}else oc.drawImage(handSprite||hand,px-tx,py-ty,hw,hh);oc.restore()}
+  const hm=HAND_META[handStyle]||HAND_META.default,hw=w*(+c.handSize.value/100)*hm.scale,hh=hw*hand.naturalHeight/hand.naturalWidth,tx0=hw*(+c.tipX.value/100),ty=hh*(+c.tipY.value/100);let tx=tx0;oc.save();quality(oc);oc.globalAlpha=1;if(NATURAL_HANDS.has(handStyle)){oc.shadowColor='rgba(40,28,18,.16)';oc.shadowBlur=Math.max(1,hw*.005);oc.shadowOffsetX=hw*.0015;oc.shadowOffsetY=hw*.003;}if(side==='Left'){tx=hw-tx;const x=px-tx,y=py-ty;oc.translate(x+hw,y);oc.scale(-1,1);oc.drawImage(handSprite||hand,0,0,hw,hh)}else oc.drawImage(handSprite||hand,px-tx,py-ty,hw,hh);oc.restore()}
 make.onclick=async()=>{
   if(busy||!ready)return;if(!MediaRecorder||!out.captureStream){status.textContent='This browser cannot export this video.';return}
   busy=true;make.disabled=true;resultCard.classList.add('hide');status.classList.remove('err');const dur=source.duration||0,longVideo=dur>90;status.textContent=longVideo?'Preparing long video… keep this tab open and the iPad unlocked.':'Preparing full-resolution video…';let cs;
