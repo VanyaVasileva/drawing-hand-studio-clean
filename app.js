@@ -1,7 +1,7 @@
 (()=>{'use strict';
 const $=id=>document.getElementById(id), LEAD=.07, INK_STREAMLINE=35, INK_FOLLOW=1-(INK_STREAMLINE/100)*.82;
-const HANDS={default:'https://raw.githubusercontent.com/VanyaVasileva/drawing-hand-studio/main/assets/default_hand.png',cream:'assets/hand-cream-sleeve.png',sage:'assets/hand-sage-sleeve.png',pink:'assets/hand-pink-sleeve.png',dark:'assets/hand-dark-sleeve.png',brownOatmeal:'assets/hand-brown-oatmeal.png'};
-const HAND_META={default:{tipX:14.8,tipY:34.4,scale:1},cream:{tipX:9.4,tipY:26.2,scale:1.319},sage:{tipX:11.0,tipY:28.1,scale:1.292},pink:{tipX:13.8,tipY:27.4,scale:1.308},dark:{tipX:8.5,tipY:28.1,scale:1.280},brownOatmeal:{tipX:10.8,tipY:24.5,scale:1.398}};
+const HANDS={woodenPencil:'assets/hand-wooden-pencil.png',default:'https://raw.githubusercontent.com/VanyaVasileva/drawing-hand-studio/main/assets/default_hand.png',cream:'assets/hand-cream-sleeve.png',sage:'assets/hand-sage-sleeve.png',pink:'assets/hand-pink-sleeve.png',dark:'assets/hand-dark-sleeve.png',brownOatmeal:'assets/hand-brown-oatmeal.png'};
+const HAND_META={woodenPencil:{tipX:9.5,tipY:55.9,scale:1.1},default:{tipX:14.8,tipY:34.4,scale:1},cream:{tipX:9.4,tipY:26.2,scale:1.319},sage:{tipX:11.0,tipY:28.1,scale:1.292},pink:{tipX:13.8,tipY:27.4,scale:1.308},dark:{tipX:8.5,tipY:28.1,scale:1.280},brownOatmeal:{tipX:10.8,tipY:24.5,scale:1.398}};
 const file=$('file'),source=$('source'),make=$('make'),status=$('status'),fileStatus=$('fileStatus'),size=$('size'),duration=$('duration'),resultCard=$('resultCard'),result=$('result'),download=$('download'),out=$('output'),oc=out.getContext('2d',{alpha:false}),track=$('track'),tc=track.getContext('2d',{willReadFrequently:true});
 const c={handSize:$('handSize'),tipX:$('tipX'),tipY:$('tipY'),offX:$('offX'),offY:$('offY'),sensitivity:$('sensitivity')};
 const v={handSize:$('handSizeV'),tipX:$('tipXV'),tipY:$('tipYV'),offX:$('offXV'),offY:$('offYV'),sensitivity:$('sensV')};
@@ -13,6 +13,16 @@ function seg(id,set){const el=$(id);if(!el)return;el.onclick=e=>{const b=e.targe
 seg('side',x=>side=x);seg('preset',x=>preset=x);
 function setHandButton(name){const el=$('handStyle');if(!el)return;[...el.querySelectorAll('button')].forEach(b=>b.classList.toggle('on',b.dataset.v===name))}
 function applyHandMeta(name){const m=HAND_META[name]||HAND_META.default;c.tipX.value=m.tipX;c.tipY.value=m.tipY;labels()}
+let handSprite=null;
+function prepareHandSprite(){
+  handSprite=null;
+  if(handStyle!=='woodenPencil')return;
+  const cv=document.createElement('canvas');cv.width=hand.naturalWidth;cv.height=hand.naturalHeight;
+  const ctx=cv.getContext('2d');ctx.drawImage(hand,0,0);
+  const pixels=ctx.getImageData(0,0,cv.width,cv.height);
+  for(let i=3;i<pixels.data.length;i+=4){const a=pixels.data[i];pixels.data[i]=a<128?0:a<240?Math.round((a-128)*255/112):255;}
+  ctx.putImageData(pixels,0,0);handSprite=cv;
+}
 const hand=new Image();hand.crossOrigin='anonymous';let handReady=Promise.resolve();
 function loadHandStyle(name){
   if(name==='cursor'){
@@ -21,7 +31,7 @@ function loadHandStyle(name){
     if(ready&&!busy)status.textContent='Ready to create.';
     return handReady;
   }
-  handStyle=HANDS[name]?name:'default';applyHandMeta(handStyle);handReady=new Promise((ok,no)=>{hand.onload=()=>{if(ready&&!busy)status.textContent='Ready to create.';ok()};hand.onerror=()=>{if(handStyle!=='default'){const failed=handStyle;handStyle='default';setHandButton('default');applyHandMeta('default');status.textContent='Hand image not found: '+failed+'.';hand.onload=()=>ok();hand.onerror=()=>no(Error('Built-in hand image could not load'));hand.src=HANDS.default}else no(Error('Built-in hand image could not load'))};hand.src=HANDS[handStyle]});return handReady}
+  handStyle=HANDS[name]?name:'default';applyHandMeta(handStyle);handReady=new Promise((ok,no)=>{hand.onload=()=>{prepareHandSprite();if(ready&&!busy)status.textContent='Ready to create.';ok()};hand.onerror=()=>{if(handStyle!=='default'){const failed=handStyle;handStyle='default';handSprite=null;setHandButton('default');applyHandMeta('default');status.textContent='Hand image not found: '+failed+'.';hand.onload=()=>ok();hand.onerror=()=>no(Error('Built-in hand image could not load'));hand.src=HANDS.default}else no(Error('Built-in hand image could not load'))};hand.src=HANDS[handStyle]});return handReady}
 loadHandStyle('default');seg('handStyle',x=>loadHandStyle(x));
 function meta(){if(source.videoWidth&&source.videoHeight){size.textContent=source.videoWidth+' × '+source.videoHeight;duration.textContent=isFinite(source.duration)?source.duration.toFixed(1)+'s':'—';ready=true;if(!busy)make.disabled=false;fileStatus.textContent='Video ready.';status.textContent=source.duration>90?'Ready. Long videos process in real time — keep this tab open.':'Ready to create.'}}
 ['loadedmetadata','loadeddata','canplay','durationchange'].forEach(x=>source.addEventListener(x,meta));
@@ -98,7 +108,7 @@ function drawHand(p,F,w,h,frame){
     oc.restore();
     return;
   }
-  const hm=HAND_META[handStyle]||HAND_META.default,hw=w*(+c.handSize.value/100)*hm.scale,hh=hw*hand.naturalHeight/hand.naturalWidth,tx0=hw*(+c.tipX.value/100),ty=hh*(+c.tipY.value/100);let tx=tx0;oc.save();quality(oc);oc.globalAlpha=1;if(side==='Left'){tx=hw-tx;const x=px-tx,y=py-ty;oc.translate(x+hw,y);oc.scale(-1,1);oc.drawImage(hand,0,0,hw,hh)}else oc.drawImage(hand,px-tx,py-ty,hw,hh);oc.restore()}
+  const hm=HAND_META[handStyle]||HAND_META.default,hw=w*(+c.handSize.value/100)*hm.scale,hh=hw*hand.naturalHeight/hand.naturalWidth,tx0=hw*(+c.tipX.value/100),ty=hh*(+c.tipY.value/100);let tx=tx0;oc.save();quality(oc);oc.globalAlpha=1;if(handStyle==='woodenPencil'){oc.shadowColor='rgba(40,28,18,.16)';oc.shadowBlur=Math.max(1,hw*.005);oc.shadowOffsetX=hw*.0015;oc.shadowOffsetY=hw*.003;}if(side==='Left'){tx=hw-tx;const x=px-tx,y=py-ty;oc.translate(x+hw,y);oc.scale(-1,1);oc.drawImage(handSprite||hand,0,0,hw,hh)}else oc.drawImage(handSprite||hand,px-tx,py-ty,hw,hh);oc.restore()}
 make.onclick=async()=>{
   if(busy||!ready)return;if(!MediaRecorder||!out.captureStream){status.textContent='This browser cannot export this video.';return}
   busy=true;make.disabled=true;resultCard.classList.add('hide');status.classList.remove('err');const dur=source.duration||0,longVideo=dur>90;status.textContent=longVideo?'Preparing long video… keep this tab open and the iPad unlocked.':'Preparing full-resolution video…';let cs;
