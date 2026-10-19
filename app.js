@@ -86,11 +86,6 @@ function tracker(vw,vh){
 }
 async function audio(){const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return null;if(!aCtx){aCtx=new AC;aSrc=aCtx.createMediaElementSource(source);aDelay=aCtx.createDelay(1);aDelay.delayTime.value=LEAD;aDest=aCtx.createMediaStreamDestination();aSrc.connect(aDelay);aDelay.connect(aDest)}if(aCtx.state==='suspended')await aCtx.resume();return aDest.stream}
 async function start(){source.pause();try{source.currentTime=0}catch{};if(source.readyState<2)await new Promise(r=>{let done=false;const f=()=>{if(done)return;done=true;source.removeEventListener('loadeddata',f);r()};source.addEventListener('loadeddata',f,{once:true});setTimeout(f,1200)})}
-function naturalHandFrameScale(w,h,hw,hh){
-  if(!NATURAL_HANDS.has(handStyle))return 1;
-  const margin=Math.max(4,Math.min(w,h)*.008);
-  return Math.max(.001,Math.min(1,(w-margin*2)/Math.max(1,hw),(h-margin*2)/Math.max(1,hh)));
-}
 function keepNaturalHandInsideFrame(x,y,w,h,hw,hh){
   if(!NATURAL_HANDS.has(handStyle))return{x,y};
   const margin=Math.max(4,Math.min(w,h)*.008);
@@ -123,9 +118,7 @@ function drawHand(p,F,w,h,frame){
     return;
   }
   const hm=HAND_META[handStyle]||HAND_META.default;
-  let hw=w*(+c.handSize.value/100)*hm.scale,hh=hw*hand.naturalHeight/hand.naturalWidth;
-  const constantFit=naturalHandFrameScale(w,h,hw,hh);
-  hw*=constantFit;hh*=constantFit;
+  const hw=w*(+c.handSize.value/100)*hm.scale,hh=hw*hand.naturalHeight/hand.naturalWidth;
   const tipX=hw*(+c.tipX.value/100),ty=hh*(+c.tipY.value/100),tx=side==='Left'?hw-tipX:tipX;
   const pos=keepNaturalHandInsideFrame(px-tx,py-ty,w,h,hw,hh);
   oc.save();quality(oc);oc.globalAlpha=1;
