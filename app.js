@@ -86,6 +86,16 @@ function tracker(vw,vh){
 }
 async function audio(){const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return null;if(!aCtx){aCtx=new AC;aSrc=aCtx.createMediaElementSource(source);aDelay=aCtx.createDelay(1);aDelay.delayTime.value=LEAD;aDest=aCtx.createMediaStreamDestination();aSrc.connect(aDelay);aDelay.connect(aDest)}if(aCtx.state==='suspended')await aCtx.resume();return aDest.stream}
 async function start(){source.pause();try{source.currentTime=0}catch{};if(source.readyState<2)await new Promise(r=>{let done=false;const f=()=>{if(done)return;done=true;source.removeEventListener('loadeddata',f);r()};source.addEventListener('loadeddata',f,{once:true});setTimeout(f,1200)})}
+function fitNaturalHandToFrame(px,py,w,h,hw,hh,tx,ty){
+  if(!NATURAL_HANDS.has(handStyle))return 1;
+  const margin=Math.max(4,Math.min(w,h)*.008),limits=[
+    (px-margin)/Math.max(1,tx),
+    (w-margin-px)/Math.max(1,hw-tx),
+    (py-margin)/Math.max(1,ty),
+    (h-margin-py)/Math.max(1,hh-ty)
+  ];
+  return Math.max(.001,Math.min(1,...limits));
+}
 function drawHand(p,F,w,h,frame){
   const px=F.dx+p.x*F.s+w*(+c.offX.value/100),py=F.dy+p.y*F.s+h*(+c.offY.value/100);
   if(handStyle==='cursor'){
@@ -109,7 +119,18 @@ function drawHand(p,F,w,h,frame){
     oc.restore();
     return;
   }
-  const hm=HAND_META[handStyle]||HAND_META.default,hw=w*(+c.handSize.value/100)*hm.scale,hh=hw*hand.naturalHeight/hand.naturalWidth,tx0=hw*(+c.tipX.value/100),ty=hh*(+c.tipY.value/100);let tx=tx0;oc.save();quality(oc);oc.globalAlpha=1;if(NATURAL_HANDS.has(handStyle)){oc.shadowColor='rgba(40,28,18,.16)';oc.shadowBlur=Math.max(1,hw*.005);oc.shadowOffsetX=hw*.0015;oc.shadowOffsetY=hw*.003;}if(side==='Left'){tx=hw-tx;const x=px-tx,y=py-ty;oc.translate(x+hw,y);oc.scale(-1,1);oc.drawImage(handSprite||hand,0,0,hw,hh)}else oc.drawImage(handSprite||hand,px-tx,py-ty,hw,hh);oc.restore()}
+  const hm=HAND_META[handStyle]||HAND_META.default;
+  let hw=w*(+c.handSize.value/100)*hm.scale,hh=hw*hand.naturalHeight/hand.naturalWidth;
+  let tx=hw*(+c.tipX.value/100),ty=hh*(+c.tipY.value/100);
+  if(side==='Left')tx=hw-tx;
+  const frameFit=fitNaturalHandToFrame(px,py,w,h,hw,hh,tx,ty);
+  hw*=frameFit;hh*=frameFit;tx*=frameFit;ty*=frameFit;
+  oc.save();quality(oc);oc.globalAlpha=1;
+  if(NATURAL_HANDS.has(handStyle)){oc.shadowColor='rgba(40,28,18,.16)';oc.shadowBlur=Math.max(1,hw*.005);oc.shadowOffsetX=hw*.0015;oc.shadowOffsetY=hw*.003;}
+  if(side==='Left'){const x=px-tx,y=py-ty;oc.translate(x+hw,y);oc.scale(-1,1);oc.drawImage(handSprite||hand,0,0,hw,hh)}
+  else oc.drawImage(handSprite||hand,px-tx,py-ty,hw,hh);
+  oc.restore()
+}
 make.onclick=async()=>{
   if(busy||!ready)return;if(!MediaRecorder||!out.captureStream){status.textContent='This browser cannot export this video.';return}
   busy=true;make.disabled=true;resultCard.classList.add('hide');status.classList.remove('err');const dur=source.duration||0,longVideo=dur>90;status.textContent=longVideo?'Preparing long video… keep this tab open and the iPad unlocked.':'Preparing full-resolution video…';let cs;
