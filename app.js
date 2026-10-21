@@ -122,7 +122,13 @@ function drawHand(p,F,w,h,frame){
   const tipX=hw*(+c.tipX.value/100),ty=hh*(+c.tipY.value/100),tx=side==='Left'?hw-tipX:tipX;
   const pos=keepNaturalHandInsideFrame(px-tx,py-ty,w,h,hw,hh);
   oc.save();quality(oc);oc.globalAlpha=1;
-  if(NATURAL_HANDS.has(handStyle)){oc.shadowColor='rgba(40,28,18,.16)';oc.shadowBlur=Math.max(1,hw*.005);oc.shadowOffsetX=hw*.0015;oc.shadowOffsetY=hw*.003;}
+  if(NATURAL_HANDS.has(handStyle)){
+    const classicPen=handStyle==='classicInkPen';
+    oc.shadowColor=classicPen?'rgba(30,25,22,.28)':'rgba(40,28,18,.16)';
+    oc.shadowBlur=Math.max(1,hw*(classicPen?.009:.005));
+    oc.shadowOffsetX=hw*(classicPen?.005:.0015);
+    oc.shadowOffsetY=hw*(classicPen?.008:.003);
+  }
   if(side==='Left'){oc.translate(pos.x+hw,pos.y);oc.scale(-1,1);oc.drawImage(handSprite||hand,0,0,hw,hh)}
   else oc.drawImage(handSprite||hand,pos.x,pos.y,hw,hh);
   oc.restore()
